@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+</head>
+<!-- Gradient creating -->
+<style>
+    body {
+    width: 100wh;
+    height: 90vh;
+    color: #fff;
+    background: linear-gradient(-45deg, #6a7ff7, #f74fef, #403de2, #d93ae7);
+    background-size: 400% 400%;
+    -webkit-animation: Gradient 30s ease infinite;
+    -moz-animation: Gradient 30s ease infinite;
+    animation: Gradient 30s ease infinite;
+
+    user-select: none;
+    }
+
+    @-webkit-keyframes Gradient {
+    0% {
+        background-position: 0% 50%
+    }
+    50% {
+        background-position: 100% 50%
+    }
+    100% {
+        background-position: 0% 50%
+    }
+    }
+
+    @-moz-keyframes Gradient {
+    0% {
+        background-position: 0% 50%
+    }
+    50% {
+        background-position: 100% 50%
+    }
+    100% {
+        background-position: 0% 50%
+    }
+    }
+
+    @keyframes Gradient {
+    0% {
+        background-position: 0% 50%
+    }
+    50% {
+        background-position: 100% 50%
+    }
+    100% {
+        background-position: 0% 50%
+    }
+    }
+    @font-face{
+    font-family: Comfortaa-Regular;
+    src: url(./Comfortaa-Regular.ttf);
+    }
+    h1,
+    h6 {
+    font-family: 'Open Sans';
+    font-weight: 300;
+    text-align: center;
+    position: absolute;
+    top: 45%;
+    right: 0;
+    left: 0;
+    }
+
+    #clock{
+    font-family: Comfortaa-Regular;
+    font-size: 75px;
+    text-align: center;
+    line-height: 99vh;
+    }
+</style>
+<body>
+    <!-- Canvas under Tic Tac Toe fild -->
+    <!-- <div class="canvas-container">
+        <canvas id="myCanvas" width="600" height="600"></canvas>
+    </div> -->
+    <!-- Creating start button -->    
+    <style>
+        .start-button {
+        position: absolute;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%) scale(1.5);
+        padding: 15px 50px;
+        font-size: 40px;
+        font-weight: bold;
+        background-color: transparent;
+        color: #fff;
+        border: 6px solid #FFFFFF;
+        border-radius: 20px;
+        cursor: pointer;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;}
+    </style>
+    <button  id="start-button" class="start-button">Start</button>
+
+    <!-- Creating text "Select mode" -->
+    <style>
+        #text-output {
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(3);
+        text-align: center;}
+    </style>
+    <p id="text-output" style="display: none;"></p>
+
+    <!-- Creating button 1vs1 -->
+    <style>
+        .duo-button {
+        position: absolute;
+        bottom: 400px;
+        left: 40%;
+        transform: translateX(-50%) scale(1.5);
+        padding: 15px 15px;
+        font-size: 40px;
+        font-weight: bold;
+        background-color: transparent;
+        color: #fff;
+        border: 6px solid #FFFFFF;
+        border-radius: 20px;
+        cursor: pointer;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;}
+    </style>
+    <button class="duo-button" id="button-1vs1" style="display: none;">1vs1</button>
+
+    <!-- Creating button bot -->
+    <style>
+        .bot-button {
+        position: absolute;
+        bottom: 400px;
+        left: 60%;
+        transform: translateX(-50%) scale(1.5);
+        padding: 15px 30px;
+        font-size: 40px;
+        font-weight: bold;
+        background-color: transparent;
+        color: #fff;
+        border: 6px solid #FFFFFF;
+        border-radius: 20px;
+        cursor: pointer;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;}
+    </style>
+    <button class="bot-button" id="button-bot" style="display: none;">bot</button>
+
+    <!-- Fild for Tic-Tac -->
+    <style>
+        #tic-tac-toe {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            width: 600px;
+            height: 600px;
+            margin: 0 auto;
+            transform: scale(2); 
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            }
+        
+          .row {
+            display: flex;
+            margin-left: calc(.5 * var(--bs-gutter-x));
+            }
+        
+        .cell {
+            width: 200px;
+            height: 200px;
+            border: 0px solid white;
+            position:relative;
+            }
+        
+        .row:not(:last-child) {
+             border-bottom: 10px solid white;
+            }
+        
+        .cell:not(:last-child) {
+            border-right: 10px solid white;
+            }
+        
+        .square-button {
+            width: calc(100% - 6px);
+            height: calc(100% - 6px);
+            background-color: green;
+            border: none;
+            position:absolute;
+            top:3px;
+            left:3px;
+            }
+        .canvas-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50.7%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            }
+        .line {
+            position: absolute;
+            top: 42.5%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50%;
+            height: 10px;
+            background-color: white;
+            border-radius: 20px;
+            }
+
+        </style>
+        
+        <div id="tic-tac-toe" style="display: none;">
+            <div class="row">
+              <div class="cell">
+                  <button class="square-button" style="opacity: 0;" id="sqr1"></button>
+                  <canvas id="myCanvas1" width="200" height="200"></canvas>
+              </div>
+              <div class="cell">
+                  <button class="square-button" style="opacity: 0;" id="sqr2"></button>
+                  <canvas id="myCanvas2" width="200" height="200"></canvas>
+              </div>
+              <div class="cell">
+                  <button class="square-button" style="opacity: 0;" id="sqr3"></button>
+                  <canvas id="myCanvas3" width="200" height="200"></canvas>
+              </div>
+            </div>
+            <div class="row">
+              <div class="cell">
+                  <button class="square-button" style="opacity: 0;" id="sqr4"></button>
+                  <canvas id="myCanvas4" width="200" height="200"></canvas>
+              </div>
+              <div class="cell">
+                  <button class="square-button" style="opacity: 0;" id="sqr5"></button>
+                  <canvas id="myCanvas5" width="200" height="200"></canvas>
+              </div>
+              <div class="cell">
+                  <button class="square-button" style="opacity: 0;" id="sqr6"></button>
+                  <canvas id="myCanvas6" width="200" height="200"></canvas>
+              </div>
+            </div>
+            <div class="row">
+              <div class="cell">
+                  <button class="square-button" style="opacity: 0;" id="sqr7"></button>
+                  <canvas id="myCanvas7" width="200" height="200"></canvas>
+              </div>
+              <div class="cell">
+                  <button class="square-button" style="opacity: 0;" id="sqr8"></button>
+                  <canvas id="myCanvas8" width="200" height="200"></canvas>
+              </div>
+              <div class="cell">
+                  <button class="square-button" style="opacity: 0;" id="sqr9"></button>
+                  <canvas id="myCanvas9" width="200" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+
+    <div class="line" id="white-line" style="display: none"></div>
+    <style>
+        .again-button {
+        position: absolute;
+        top: 87%;
+        left: 50%;
+        transform: translateX(-50%) scale(1.5);
+        padding: 5px 5px;
+        font-size: 40px;
+        font-weight: bold;
+        background-color: transparent;
+        color: #fff;
+        border: 6px solid #FFFFFF;
+        border-radius: 20px;
+        cursor: pointer;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;}
+    </style>
+    <button  id="again-button" class="again-button" style="display: none">Again</button>
+
+    
+
+
+    <!-- Pushing button -->
+    <script>
+        let fld1 = 0;
+        let fld2 = 0;
+        let fld3 = 0;
+        let fld4 = 0;
+        let fld5 = 0;
+        let fld6 = 0;
+        let fld7 = 0;
+        let fld8 = 0;
+        let fld9 = 0;
+        let move = 1;
+        let bot = 0;
+        let button1 = document.getElementById("sqr1");
+        let button2 = document.getElementById("sqr2");
+        let button3 = document.getElementById("sqr3");
+        let button4 = document.getElementById("sqr4");
+        let button5 = document.getElementById("sqr5");
+        let button6 = document.getElementById("sqr6");
+        let button7 = document.getElementById("sqr7");
+        let button8 = document.getElementById("sqr8");
+        let button9 = document.getElementById("sqr9");
+        button1.addEventListener("click", function(){
+            if (fld1 == 0) {
+                if (move == 1){
+                    drawCircle(1);
+                    move = 2;
+                    fld1 = 1;
+                }
+                else if (move == 2 && bot != 1){
+                    drawCross(1);
+                    move = 1;
+                    fld1 = 2;
+                }
+                checkwin(),BotDoMove()}});
+        button2.addEventListener("click", function(){
+            if (fld2 == 0) {
+                if (move == 1){
+                    drawCircle(2);
+                    move = 2;
+                    fld2 = 1;
+                }
+                else if (move == 2 && bot != 1){
+                    drawCross(2);
+                    move = 1;
+                    fld2 = 2;
+                }
+                checkwin(),BotDoMove()}});
+        button3.addEventListener("click", function(){
+            if (fld3 == 0) {
+                if (move == 1){
+                    drawCircle(3);
+                    move = 2;
+                    fld3 = 1;
+                }
+                else if (move == 2 && bot != 1){
+                    drawCross(3);
+                    move = 1;
+                    fld3 = 2;
+                }
+                checkwin(),BotDoMove()}});
+        button4.addEventListener("click", function(){
+            if (fld4 == 0) {
+                if (move == 1){
+                    drawCircle(4);
+                    move = 2;
+                    fld4 = 1;
+                }
+                else if (move == 2 && bot != 1){
+                    drawCross(4);
+                    move = 1;
+                    fld4 = 2;
+                }
+                checkwin(),BotDoMove()}});
+        button5.addEventListener("click", function(){
+            if (fld5 == 0) {
+                if (move == 1){
+                    drawCircle(5);
+                    move = 2;
+                    fld5 = 1;
+                }
+                else if (move == 2 && bot != 1){
+                    drawCross(5);
+                    move = 1;
+                    fld5 = 2;
+                }
+                checkwin(),BotDoMove()}});
+        button6.addEventListener("click", function(){
+            if (fld6 == 0) {
+                if (move == 1){
+                    drawCircle(6);
+                    move = 2;
+                    fld6 = 1;
+                }
+                else if (move == 2 && bot != 1){
+                    drawCross(6);
+                    move = 1;
+                    fld6 = 2;
+                }
+                checkwin(),BotDoMove()}});
+        button7.addEventListener("click", function(){
+            if (fld7 == 0) {
+                if (move == 1){
+                    drawCircle(7);
+                    move = 2;
+                    fld7 = 1;
+                }
+                else if (move == 2 && bot != 1){
+                    drawCross(7);
+                    move = 1;
+                    fld7 = 2;
+                }
+                checkwin(),BotDoMove()}});
+        button8.addEventListener("click", function(){
+            if (fld8 == 0) {
+                if (move == 1){
+                    drawCircle(8);
+                    move = 2;
+                    fld8 = 1;
+                }
+                else if (move == 2 && bot != 1){
+                    drawCross(8);
+                    move = 1;
+                    fld8 = 2;
+                }
+                checkwin(),BotDoMove()}});
+        button9.addEventListener("click", function(){
+            if (fld9 == 0) {
+                if (move == 1){
+                    drawCircle(9);
+                    move = 2;
+                    fld9 = 1;
+                }
+                else if (move == 2 && bot != 1){
+                    drawCross(9);
+                    move = 1;
+                    fld9 = 2;
+                }
+                checkwin(),BotDoMove()}});
+        
+        // Function that write circle
+        function drawCircle(buttonNum) {
+            let canvas = document.getElementById("myCanvas"+buttonNum);
+            let ctx = canvas.getContext("2d");
+            ctx.beginPath();
+            ctx.lineWidth = 10;
+            ctx.arc(85, 100, 75, 0, 2 * Math.PI);
+            ctx.strokeStyle = "white"; 
+            ctx.stroke();}
+        function drawCircleWin(buttonNum) {
+            let canvas = document.getElementById("myCanvas"+buttonNum);
+            let ctx = canvas.getContext("2d");
+            ctx.beginPath();
+            ctx.lineWidth = 10;
+            ctx.arc(85, 100, 75, 0, 2 * Math.PI);
+            ctx.strokeStyle = "lime"; 
+            ctx.stroke();}
+
+
+        // Function that write cross
+        function drawCross(buttonNum) {
+            let canvas = document.getElementById("myCanvas"+buttonNum);
+            let ctx = canvas.getContext("2d");
+            ctx.beginPath();
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = "white"; 
+            ctx.moveTo(5, 15);
+            ctx.lineTo(165, 175);
+            ctx.moveTo(165, 15);
+            ctx.lineTo(5, 175);
+            ctx.stroke();}
+        function drawCrossWin(buttonNum) {
+            let canvas = document.getElementById("myCanvas"+buttonNum);
+            let ctx = canvas.getContext("2d");
+            ctx.beginPath();
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = "lime"; 
+            ctx.moveTo(5, 15);
+            ctx.lineTo(165, 175);
+            ctx.moveTo(165, 15);
+            ctx.lineTo(5, 175);
+            ctx.stroke();}
+        
+
+        function endgame(){
+            againbutton.style.display = "block";
+            fld1 = 3;
+            fld2 = 3;
+            fld3 = 3;
+            fld4 = 3;
+            fld5 = 3;
+            fld6 = 3;
+            fld7 = 3;
+            fld8 = 3;
+            fld9 = 3;
+            move = 3
+        }
+
+        function BotDoMove(){
+            if (bot == 1 && move == 2){
+                if (fld1 == fld2 && fld3 == 0 && fld1 != 0){
+                    drawCross(3), move = 1, fld3 = 2;
+                }
+                else if (fld2 == fld3 && fld1 == 0 && fld2 == 2){
+                    drawCross(1), move = 1, fld1 = 2;
+                }
+                else if (fld1 == fld3 && fld2 == 0 && fld1 == 2){
+                    drawCross(2), move = 1, fld2 = 2;
+                }
+                else if (fld4 == fld5 && fld6 == 0 && fld4 == 2){
+                    drawCross(6), move = 1, fld6 = 2;
+                }
+                else if (fld5 == fld6 && fld4 == 0 && fld5 == 2){
+                    drawCross(4), move = 1, fld4 = 2;
+                }
+                else if (fld4 == fld6 && fld5 == 0 && fld4 == 2){
+                    drawCross(5), move = 1, fld5 = 2;
+                }
+                else if (fld7 == fld8 && fld9 == 0 && fld7 == 2){
+                    drawCross(9), move = 1, fld9 = 2;
+                }
+                else if (fld8 == fld9 && fld7 == 0 && fld8 == 2){
+                    drawCross(7), move = 1, fld7 = 2;
+                }
+                else if (fld7 == fld9 && fld8 == 0 && fld7 == 2){
+                    drawCross(8), move = 1, fld8 = 2;
+                }
+                else if (fld1 == fld4 && fld7 == 0 && fld1 == 2){
+                    drawCross(7), move = 1, fld7 = 2;
+                }
+                else if (fld4 == fld7 && fld1 == 0 && fld4 == 2){
+                    drawCross(1), move = 1, fld1 = 2;
+                }
+                else if (fld1 == fld7 && fld4 == 0 && fld1 == 2){
+                    drawCross(4), move = 1, fld4 = 2;
+                }
+                else if (fld2 == fld5 && fld8 == 0 && fld2 == 2){
+                    drawCross(8), move = 1, fld8 = 2;
+                }
+                else if (fld5 == fld8 && fld2 == 0 && fld5 == 2){
+                    drawCross(2), move = 1, fld2 = 2;
+                }
+                else if (fld2 == fld8 && fld5 == 0 && fld2 == 2){
+                    drawCross(5), move = 1, fld5 = 2;
+                }
+                else if (fld3 == fld6 && fld9 == 0 && fld3 == 2){
+                    drawCross(9), move = 1, fld9 = 2;
+                }
+                else if (fld6 == fld9 && fld3 == 0 && fld6 == 2){
+                    drawCross(3), move = 1, fld3 = 2;
+                }
+                else if (fld3 == fld9 && fld6 == 0 && fld3 == 2){
+                    drawCross(6), move = 1, fld6 = 2;
+                }
+                else if (fld1 == fld5 && fld9 == 0 && fld1 == 2){
+                    drawCross(9), move = 1, fld9 = 2;
+                }
+                else if (fld5 == fld9 && fld1 == 0 && fld5 == 2){
+                    drawCross(1), move = 1, fld1 = 2;
+                }
+                else if (fld1 == fld9 && fld5 == 0 && fld1 == 2){
+                    drawCross(5), move = 1, fld5 = 2;
+                }
+                else if (fld3 == fld5 && fld7 == 0 && fld3 == 2){
+                    drawCross(7), move = 1, fld7 = 2;
+                }
+                else if (fld5 == fld7 && fld3 == 0 && fld5 == 2){
+                    drawCross(3), move = 1, fld3 = 2;
+                }
+                else if (fld3 == fld7 && fld5 == 0 && fld3 == 2){
+                    drawCross(5), move = 1, fld5 = 2;
+                }
+
+                else if (fld1 == fld2 && fld3 == 0 && fld1 == 1){
+                    drawCross(3), move = 1, fld3 = 2;
+                }
+                else if (fld2 == fld3 && fld1 == 0 && fld2 == 1){
+                    drawCross(1), move = 1, fld1 = 2;
+                }
+                else if (fld1 == fld3 && fld2 == 0 && fld1 == 1){
+                    drawCross(2), move = 1, fld2 = 2;
+                }
+                else if (fld4 == fld5 && fld6 == 0 && fld4 == 1){
+                    drawCross(6), move = 1, fld6 = 2;
+                }
+                else if (fld5 == fld6 && fld4 == 0 && fld5 == 1){
+                    drawCross(4), move = 1, fld4 = 2;
+                }
+                else if (fld4 == fld6 && fld5 == 0 && fld4 == 1){
+                    drawCross(5), move = 1, fld5 = 2;
+                }
+                else if (fld7 == fld8 && fld9 == 0 && fld7 == 1){
+                    drawCross(9), move = 1, fld9 = 2;
+                }
+                else if (fld8 == fld9 && fld7 == 0 && fld8 == 1){
+                    drawCross(7), move = 1, fld7 = 2;
+                }
+                else if (fld7 == fld9 && fld8 == 0 && fld7 == 1){
+                    drawCross(8), move = 1, fld8 = 2;
+                }
+                else if (fld1 == fld4 && fld7 == 0 && fld1 == 1){
+                    drawCross(7), move = 1, fld7 = 2;
+                }
+                else if (fld4 == fld7 && fld1 == 0 && fld4 == 1){
+                    drawCross(1), move = 1, fld1 = 2;
+                }
+                else if (fld1 == fld7 && fld4 == 0 && fld1 == 1){
+                    drawCross(4), move = 1, fld4 = 2;
+                }
+                else if (fld2 == fld5 && fld8 == 0 && fld2 == 1){
+                    drawCross(8), move = 1, fld8 = 2;
+                }
+                else if (fld5 == fld8 && fld2 == 0 && fld5 == 1){
+                    drawCross(2), move = 1, fld2 = 2;
+                }
+                else if (fld2 == fld8 && fld5 == 0 && fld2 == 1){
+                    drawCross(5), move = 1, fld5 = 2;
+                }
+                else if (fld3 == fld6 && fld9 == 0 && fld3 == 1){
+                    drawCross(9), move = 1, fld9 = 2;
+                }
+                else if (fld6 == fld9 && fld3 == 0 && fld6 == 1){
+                    drawCross(3), move = 1, fld3 = 2;
+                }
+                else if (fld3 == fld9 && fld6 == 0 && fld3 == 1){
+                    drawCross(6), move = 1, fld6 = 2;
+                }
+                else if (fld1 == fld5 && fld9 == 0 && fld1 == 1){
+                    drawCross(9), move = 1, fld9 = 2;
+                }
+                else if (fld5 == fld9 && fld1 == 0 && fld5 == 1){
+                    drawCross(1), move = 1, fld1 = 2;
+                }
+                else if (fld1 == fld9 && fld5 == 0 && fld1 == 1){
+                    drawCross(5), move = 1, fld5 = 2;
+                }
+                else if (fld3 == fld5 && fld7 == 0 && fld3 == 1){
+                    drawCross(7), move = 1, fld7 = 2;
+                }
+                else if (fld5 == fld7 && fld3 == 0 && fld5 == 1){
+                    drawCross(3), move = 1, fld3 = 2;
+                }
+                else if (fld3 == fld7 && fld5 == 0 && fld3 == 1){
+                    drawCross(5), move = 1, fld5 = 2;
+                }
+
+
+
+
+
+
+
+
+                else{
+                    let botMove = 0;
+                    let randomformovebot;
+                    do {
+                        randomformovebot = Math.floor(Math.random() * 9) + 1;
+                        if (randomformovebot == 1 && fld1 == 0){
+                            fld1 = 2;
+                            drawCross(1), botMove = 1, move = 1
+                        }
+                        else if (randomformovebot == 2 && fld2 == 0){
+                            fld2 = 2;
+                            drawCross(2), botMove = 1, move = 1
+                        }
+                        else if (randomformovebot == 3 && fld3 == 0){
+                            fld3 = 2;
+                            drawCross(3), botMove = 1, move = 1
+                        }
+                        else if (randomformovebot == 4 && fld4 == 0){
+                            fld4 = 2;
+                            drawCross(4), botMove = 1, move = 1
+                        }
+                        else if (randomformovebot == 5 && fld5 == 0){
+                            fld5 = 2;
+                            drawCross(5), botMove = 1, move = 1
+                        }
+                        else if (randomformovebot == 6 && fld6 == 0){
+                            fld6 = 2;
+                            drawCross(6), botMove = 1, move = 1
+                        }
+                        else if (randomformovebot == 7 && fld7 == 0){
+                            fld7 = 2;
+                            drawCross(7), botMove = 1, move = 1
+                        }
+                        else if (randomformovebot == 8 && fld8 == 0){
+                            fld8 = 2;
+                            drawCross(8), botMove = 1, move = 1
+                        }
+                        else if (randomformovebot == 9 && fld9 == 0){
+                            fld9 = 2;
+                            drawCross(9), botMove = 1, move = 1
+                        }
+                    } while (botMove != 1);}}
+                    checkwin()};
+
+        function clearCanvas() {
+            const arr = [1,2,3,4,5,6,7,8,9];
+            for(let item of arr){
+                let canvas = document.getElementById("myCanvas" + item);
+                let ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            fld1 = 0;
+            fld2 = 0;
+            fld3 = 0;
+            fld4 = 0;
+            fld5 = 0;
+            fld6 = 0;
+            fld7 = 0;
+            fld8 = 0;
+            fld9 = 0;
+            move = 1;
+        }
+        // Check for win
+        function checkwin(){
+            // console.log("raund") 
+            // console.log(fld1, fld2, fld3) 
+            // console.log(fld4, fld5, fld6)  
+            // console.log(fld7, fld8, fld9)
+            if (fld1 == fld2 && fld1 == fld3 && fld1 != 0){if (fld1 == 2){
+                    drawCrossWin(1), drawCrossWin(2), drawCrossWin(3), endgame()
+                }else if (fld1 == 1) {drawCircleWin(1), drawCircleWin(2), drawCircleWin(3),endgame()}}
+            if (fld4 == fld5 && fld4 == fld6 && fld4 != 0){if (fld4 == 2){
+                    drawCrossWin(4), drawCrossWin(5), drawCrossWin(6), endgame()
+                }else if (fld4 == 1) {drawCircleWin(4), drawCircleWin(5), drawCircleWin(6),endgame()}}
+            if (fld7 == fld8 && fld7 == fld9 && fld7 != 0){if (fld7 == 2){
+                    drawCrossWin(7), drawCrossWin(8), drawCrossWin(9), endgame()
+                }else if (fld7 == 1) {drawCircleWin(7), drawCircleWin(8), drawCircleWin(9),endgame()}}
+            if (fld1 == fld5 && fld1 == fld9 && fld1 != 0){if (fld1 == 2){
+                    drawCrossWin(1), drawCrossWin(5), drawCrossWin(9), endgame()
+                }else if (fld1 == 1) {drawCircleWin(1), drawCircleWin(5), drawCircleWin(9),endgame()}}
+            if (fld3 == fld5 && fld3 == fld7 && fld3 != 0){if (fld3 == 2){
+                    drawCrossWin(3), drawCrossWin(5), drawCrossWin(7), endgame()
+                }else if (fld3 == 1) {drawCircleWin(3), drawCircleWin(5), drawCircleWin(7),endgame()}}
+            if (fld1 == fld4 && fld1 == fld7 && fld1 != 0){if (fld1 == 2){
+                    drawCrossWin(1), drawCrossWin(4), drawCrossWin(7), endgame()
+                }else if (fld1 == 1) {drawCircleWin(1), drawCircleWin(4), drawCircleWin(7),endgame()}}
+            if (fld2 == fld5 && fld2 == fld8 && fld2 != 0){if (fld2 == 2){
+                    drawCrossWin(2), drawCrossWin(5), drawCrossWin(8), endgame()
+                }else if (fld2 == 1) {drawCircleWin(2), drawCircleWin(5), drawCircleWin(8),endgame()}}
+            if (fld3 == fld6 && fld3 == fld9 && fld3 != 0){if (fld3 == 2){
+                    drawCrossWin(3), drawCrossWin(6), drawCrossWin(9), endgame()
+                }else if (fld3 == 1) {drawCircleWin(3), drawCircleWin(6), drawCircleWin(9),endgame()}}
+            if (fld1 > 0 && fld2 > 0 && fld3 > 0 && fld4 > 0 && fld5 > 0 && fld6 > 0 && fld7 > 0 && fld8 > 0 && fld9 > 0){
+                endgame()
+            }
+        };
+
+        let button = document.getElementById("start-button");
+        let output = document.getElementById("text-output");
+        let button1vs1 = document.getElementById("button-1vs1");
+        let buttonbot = document.getElementById("button-bot");
+        let tictactoe = document.getElementById("tic-tac-toe");
+        let whiteline = document.getElementById("white-line");
+        let againbutton = document.getElementById("again-button");
+
+        button.addEventListener("click", function() {
+            whiteline.style.display = "block";
+            output.style.display = "block";
+            buttonbot.style.display = "block";
+            button1vs1.style.display = "block";
+            button.style.display = "none";
+            output.innerHTML = "Select mode";});
+
+        button1vs1.addEventListener("click", function() {
+            output.style.display = "none";
+            buttonbot.style.display = "none";
+            button1vs1.style.display = "none";
+            tictactoe.style.display = "block";
+            whiteline.style.display = "none";});
+
+        buttonbot.addEventListener("click", function() {
+            output.style.display = "none";
+            buttonbot.style.display = "none";
+            button1vs1.style.display = "none";
+            tictactoe.style.display = "block";
+            whiteline.style.display = "none";
+            bot = 1;});
+
+        againbutton.addEventListener("click", function() {
+            againbutton.style.display = "none";
+            clearCanvas()});
+
+        // Show mouse position
+        // document.addEventListener("mousemove", function(event) {
+        // var x = event.clientX;
+        // var y = event.clientY;
+        // document.getElementById("coordinates").innerHTML = "X: " + x + " Y: " + y;});
+    </script>
+    <!-- <div id="coordinates"></div> -->
+
+    <!-- Text "Tic-Tac-Toe" in the midle of screen -->
+    <h1 style="text-align: center; margin-top: -400px; font-size: 5rem;">Tic-Tac-Toe</h1>
+
+    <!-- hide scroll wheel -->
+    <style>
+    html, body {
+    overflow: hidden;}
+    </style>
+</body>
+</html>
